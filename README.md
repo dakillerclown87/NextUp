@@ -153,7 +153,7 @@ For Chrome, extract the Chromium extension package to a permanent folder, open `
 
 The Chromium package also targets Edge, Brave, Opera/GX, and Vivaldi. Firefox has a separate package; unsigned temporary installs disappear when Firefox restarts. Safari and mobile browsers are not included.
 
-See the [extension installation guide](chrome-extension/README.md) and [YouTube API setup documentation](https://developers.google.com/youtube/v3/getting-started).
+See the [extension installation guide](https://github.com/dakillerclown87/NextUP-Chromium-Extension) and [YouTube API setup documentation](https://developers.google.com/youtube/v3/getting-started).
 
 Complete any YouTube consent/sign-in prompt and click Play once if the browser blocks autoplay. The **YouTube Connected** indicator reports player connectivity, not Google account login or API-key validity. Video availability, region, age, and embedding restrictions still apply.
 
