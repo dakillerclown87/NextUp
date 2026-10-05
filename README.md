@@ -1,3 +1,9 @@
+[![Release](https://img.shields.io/github/v/release/dakillerclown87/NextUp?include_prereleases&sort=date)](https://github.com/dakillerclown87/NextUp/releases)
+[![Release asset downloads](https://img.shields.io/github/downloads/dakillerclown87/NextUp/total)](https://github.com/dakillerclown87/NextUp/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Support on Ko-fi](https://img.shields.io/badge/Support-Ko--fi-ff5e5b)](https://ko-fi.com/nextupplus)
+
+
 # NextUp
 
 ### Your stream. Your community. Your music queue.
@@ -6,7 +12,7 @@
 
 NextUp runs in its own desktop window. The Windows EXE installer includes its Python runtime, so streamers do not need to install Python or run command-line setup scripts.
 
-**Current documented release:** `2.0.0-beta.42` · **Platform:** Windows x64 · **License:** MIT
+**Current documented release:** `2.0.0-beta.52` · **Platform:** Windows x64 · **License:** MIT
 
 [Support the project on Ko-fi](https://ko-fi.com/nextupplus)
 
