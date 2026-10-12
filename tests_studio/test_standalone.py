@@ -58,7 +58,7 @@ class StandaloneTests(unittest.IsolatedAsyncioTestCase):
                 'studio/.env','studio/secret.pfx','my-private-notes.txt','build/private.py','songid/server.py']
             for name in candidates:
                 p=root/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_text('test')
-            with patch.object(release,'ROOT',root):included={str(rel) for _,rel in release.files()}
+            with patch.object(release,'ROOT',root):included={rel.as_posix() for _,rel in release.files()}
             self.assertEqual(included,{'README.md','studio/server.py'})
 
     def test_default_home_is_new_and_does_not_adopt_legacy_account(self):
