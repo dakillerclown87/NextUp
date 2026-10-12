@@ -12,11 +12,19 @@
 
 NextUp runs in its own desktop window. The Windows EXE installer includes its Python runtime, so streamers do not need to install Python or run command-line setup scripts.
 
-**Current documented release:** `2.0.0-beta.55` · **Platform:** Windows x64 · **License:** MIT
+**Current documented release:** `2.0.0-beta.61` · **Platform:** Windows x64 · **License:** MIT
 
 [Support the project on Ko-fi](https://ko-fi.com/nextupplus)
 
 ---
+
+## IMAGES 
+<img width="1321" height="741" alt="c7ebf3d163b3376cd8992e62091cf43b" src="https://github.com/user-attachments/assets/0bc04872-561a-403a-9bf9-60eaacdd8ac7" />
+<img width="1323" height="744" alt="edd6780f760baf8e39cc8ef2891e74df" src="https://github.com/user-attachments/assets/384ebc73-c142-44f3-8237-ff908d3fa487" />
+<img width="1326" height="743" alt="40d7b36eb2ea2142299fd10ac0a331b7" src="https://github.com/user-attachments/assets/8e3dc3eb-c729-4b70-af69-ae03157cf2ee" />
+
+
+
 
 ## Contents
 
