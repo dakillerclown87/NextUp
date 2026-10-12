@@ -1,0 +1,113 @@
+{
+  "format": "nextup-widget-v2",
+  "name": "Event Horizon",
+  "layout": "spectrum",
+  "equalizer": false,
+  "label": "NOW PLAYING",
+  "presentation": "horizon",
+  "transition": "horizon",
+  "canvas": {
+    "width": 1120,
+    "height": 420
+  },
+  "fonts": [],
+  "colors": {
+    "bg": "#090a0e",
+    "panel": "#1a191a",
+    "text": "#fff7e8",
+    "muted": "#a69d92",
+    "line": "#554832",
+    "accent": "#f7d6a0",
+    "accent2": "#d4b58d"
+  },
+  "background": {
+    "image": "",
+    "opacity": 1,
+    "fit": "cover",
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "w": 1120,
+      "h": 420
+    }
+  },
+  "elements": {
+    "art": {
+      "x": 66,
+      "y": 112,
+      "w": 196,
+      "h": 196,
+      "size": 60,
+      "visible": true,
+      "font": "system",
+      "weight": 400,
+      "spacing": 0
+    },
+    "brand": {
+      "x": 302,
+      "y": 112,
+      "w": 700,
+      "h": 22,
+      "size": 12,
+      "visible": true,
+      "font": "system",
+      "weight": 400,
+      "spacing": 0
+    },
+    "title": {
+      "x": 302,
+      "y": 149,
+      "w": 734,
+      "h": 49,
+      "size": 37,
+      "visible": true,
+      "font": "system",
+      "weight": 700,
+      "spacing": 0
+    },
+    "artist": {
+      "x": 302,
+      "y": 205,
+      "w": 630,
+      "h": 30,
+      "size": 22,
+      "visible": true,
+      "font": "system",
+      "weight": 400,
+      "spacing": 0
+    },
+    "requester": {
+      "x": 302,
+      "y": 246,
+      "w": 620,
+      "h": 23,
+      "size": 14,
+      "visible": true,
+      "font": "system",
+      "weight": 400,
+      "spacing": 0
+    },
+    "progress": {
+      "x": 302,
+      "y": 284,
+      "w": 734,
+      "h": 5,
+      "size": 12,
+      "visible": true,
+      "font": "system",
+      "weight": 400,
+      "spacing": 0
+    },
+    "time": {
+      "x": 302,
+      "y": 299,
+      "w": 734,
+      "h": 20,
+      "size": 12,
+      "visible": true,
+      "font": "system",
+      "weight": 400,
+      "spacing": 0
+    }
+  }
+}

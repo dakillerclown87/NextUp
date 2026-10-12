@@ -1,0 +1,42 @@
+{
+  "recordings": {
+    "21JvBMXPGJ6rpvHacAFWUO": {
+      "id": "6kabsWWWUCKCXbBSPt4Cae",
+      "linked_from": "21JvBMXPGJ6rpvHacAFWUO",
+      "name": "Stay (feat. Holly)",
+      "isrc": "CA6D21700255",
+      "duration_ms": 233647,
+      "explicit": false,
+      "artist_ids": [
+        "7GvVTb8yFV0ZrdI30Qce6T",
+        "1WGex9YdmT4TZjmmMirZA8",
+        "3v8mPL4Pc4EkcPZS45AUTG"
+      ],
+      "artist_names": [
+        "Delta Heavy",
+        "Dirty Audio",
+        "Holly"
+      ],
+      "is_playable": true
+    },
+    "6kabsWWWUCKCXbBSPt4Cae": {
+      "id": "6kabsWWWUCKCXbBSPt4Cae",
+      "linked_from": null,
+      "name": "Stay",
+      "isrc": "CA6D21700255",
+      "duration_ms": 233647,
+      "explicit": false,
+      "artist_ids": [
+        "7GvVTb8yFV0ZrdI30Qce6T",
+        "1WGex9YdmT4TZjmmMirZA8",
+        "3v8mPL4Pc4EkcPZS45AUTG"
+      ],
+      "artist_names": [
+        "Delta Heavy",
+        "Dirty Audio",
+        "Holly"
+      ],
+      "is_playable": true
+    }
+  }
+}

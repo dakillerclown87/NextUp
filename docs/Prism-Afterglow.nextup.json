@@ -1,0 +1,124 @@
+{
+  "format": "nextup-widget-v2",
+  "name": "Prism Afterglow",
+  "layout": "spectrum",
+  "equalizer": true,
+  "label": "NOW PLAYING",
+  "presentation": "prism",
+  "transition": "fold",
+  "canvas": {
+    "width": 960,
+    "height": 280
+  },
+  "fonts": [],
+  "colors": {
+    "bg": "#090d19",
+    "panel": "#151a2c",
+    "text": "#f5f7ff",
+    "muted": "#9ba9c3",
+    "line": "#2c3650",
+    "accent": "#38dfec",
+    "accent2": "#d568f6"
+  },
+  "background": {
+    "image": "",
+    "opacity": 1,
+    "fit": "cover",
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "w": 960,
+      "h": 280
+    }
+  },
+  "elements": {
+    "art": {
+      "x": 24,
+      "y": 24,
+      "w": 232,
+      "h": 232,
+      "size": 60,
+      "visible": true,
+      "font": "system",
+      "weight": 400,
+      "spacing": 0
+    },
+    "brand": {
+      "x": 290,
+      "y": 30,
+      "w": 590,
+      "h": 24,
+      "size": 12,
+      "visible": true,
+      "font": "system",
+      "weight": 400,
+      "spacing": 0
+    },
+    "title": {
+      "x": 290,
+      "y": 72,
+      "w": 628,
+      "h": 48,
+      "size": 35,
+      "visible": true,
+      "font": "system",
+      "weight": 700,
+      "spacing": 0
+    },
+    "artist": {
+      "x": 290,
+      "y": 125,
+      "w": 475,
+      "h": 30,
+      "size": 23,
+      "visible": true,
+      "font": "system",
+      "weight": 400,
+      "spacing": 0
+    },
+    "requester": {
+      "x": 290,
+      "y": 174,
+      "w": 460,
+      "h": 24,
+      "size": 15,
+      "visible": true,
+      "font": "system",
+      "weight": 400,
+      "spacing": 0
+    },
+    "equalizer": {
+      "x": 795,
+      "y": 141,
+      "w": 122,
+      "h": 60,
+      "size": 16,
+      "visible": true,
+      "font": "system",
+      "weight": 400,
+      "spacing": 0
+    },
+    "progress": {
+      "x": 290,
+      "y": 219,
+      "w": 628,
+      "h": 7,
+      "size": 14,
+      "visible": true,
+      "font": "system",
+      "weight": 400,
+      "spacing": 0
+    },
+    "time": {
+      "x": 290,
+      "y": 236,
+      "w": 628,
+      "h": 22,
+      "size": 13,
+      "visible": true,
+      "font": "system",
+      "weight": 400,
+      "spacing": 0
+    }
+  }
+}

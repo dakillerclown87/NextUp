@@ -1,0 +1,28 @@
+'use strict';
+let widgetApplications=[];
+function audioAppLabel(p){const friendly={'spotify.exe':'Spotify','chrome.exe':'Google Chrome','msedge.exe':'Microsoft Edge'};return (friendly[p.name.toLowerCase()]||p.name)+' (PID '+p.pid+')'}
+function widgetAudioView(){const c=state.settings,e=state.equalizer;return `<section class="panel" id="widget-audio-panel"><h2>Equalizer audio</h2><div class="fieldgrid"><label>Motion<select id="widget-audio-mode"><option value="animation" ${c.widget_audio_mode==='animation'?'selected':''}>Decorative animation</option><option value="follow" ${c.widget_audio_mode==='follow'?'selected':''}>Follow NextUp playback</option><option value="application" ${c.widget_audio_mode==='application'?'selected':''}>Manual application selection</option></select></label><label>Application<select id="widget-audio-app"><option value="">Refresh applications to choose</option>${widgetApplications.map(p=>`<option value="${p.pid}:${p.started}" ${c.widget_audio_pid===p.pid&&c.widget_audio_started===p.started?'selected':''}>${esc(audioAppLabel(p))}</option>`).join('')}</select></label><label>Sensitivity <span id="widget-audio-gain-value">${c.widget_audio_gain}×</span><input id="widget-audio-gain" type="range" min="0.25" max="4" step="0.25" value="${c.widget_audio_gain}"></label></div><div class="row"><button id="widget-audio-refresh" ${e?.supported?'':'disabled'}>Refresh applications</button><button id="widget-audio-use" ${e?.supported?'':'disabled'}>Use selected application</button><button id="widget-audio-retry" ${e?.supported?'':'disabled'}>Retry capture</button></div><p id="widget-audio-status" role="status"></p><p class="hint">Choose Follow NextUp playback once to switch automatically between Spotify and your YouTube player, including after app restarts. Manual selection uses the application dropdown. Browser audio can include other tabs in the same browser process. Audio is analyzed locally; only bar levels go to widgets. Switch to Decorative animation to stop listening. The source applies to all widgets; each widget can still hide its equalizer.</p></section>`}
+function widgetAudioSync(){const label=document.querySelector('#widget-audio-status'),e=state?.equalizer;if(label&&e)label.textContent=[e.application,e.status,e.error||(!e.supported?e.reason:'')].filter(Boolean).join(' · ');const follow=state?.settings?.widget_audio_mode==='follow';for(const id of ['widget-audio-app','widget-audio-refresh','widget-audio-use']){const el=document.getElementById(id);if(el)el.disabled=follow||!e?.supported}}
+function savedWidgetUrl(v){return state.widgets[v.layout==='spectrum'?'now':v.layout]+'&preset_id='+encodeURIComponent(v.id)}
+function savedWidgetCard(v,i){const w=v.canvas?.width||600,h=v.canvas?.height||(v.layout==='queue'?480:260),url=savedWidgetUrl(v);return `<article class="panel saved-widget-card" data-preset-card="${v.id}"><h3>${esc(v.name)}</h3><iframe class="widget-preview-frame" loading="lazy" src="${esc(url)}" title="${esc(v.name)} saved preview" style="aspect-ratio:${w}/${h};height:auto"></iframe><p class="hint">${w} × ${h} · ${esc(v.layout)}</p><label>Browser source URL<input readonly value="${esc(url)}"></label><div class="row"><button data-preset-preview="${v.id}">Preview</button><button data-preset-edit="${v.id}">Edit / customize</button><button data-preset-copy="${i}">Copy widget URL</button><button data-preset-delete="${v.id}">Remove</button></div></article>`}
+async function widgetAudioClick(b){
+ if(b.id==='widget-audio-refresh'){
+  b.disabled=true;try{const result=await api('audio-apps');widgetApplications=result.applications;const select=$('#widget-audio-app');select.replaceChildren();const option=document.createElement('option');option.value='';option.textContent=widgetApplications.length?'Choose an application':'No apps found — open the app window and refresh';select.append(option);for(const p of widgetApplications){const o=document.createElement('option');o.value=p.pid+':'+p.started;o.textContent=audioAppLabel(p);select.append(o)}const c=state.settings;select.value=c.widget_audio_pid+':'+c.widget_audio_started;if(!select.value)select.value='';if(result.reason)notice(result.reason,true)}finally{b.disabled=false}return true;
+ }
+ if(b.id==='widget-audio-use'){
+  const value=$('#widget-audio-app').value,p=widgetApplications.find(p=>p.pid+':'+p.started===value);if(!p)throw Error('Refresh applications and choose one first.');b.disabled=true;
+  try{await api('audio-source',{pid:p.pid,started:p.started});await refresh(false);$('#widget-audio-mode').value='application';notice('Application selected. Play audio in that app to move the equalizer.')}finally{b.disabled=false}return true;
+ }
+ if(b.id==='widget-audio-retry'){await api('audio-retry',{});await refresh(false);return true}
+ if(b.dataset.presetDelete){
+  const id=b.dataset.presetDelete;await api('widget-remove',{id});
+  if(widgetDraft?.id===id){clearTimeout(widgetSaveTimer);widgetLive=false;delete widgetDraft.id;widgetDirty=true;}
+  const dialog=$('#widget-saved-preview');if(dialog?.dataset.presetId===id)dialog.close();await refresh();notice('Saved widget removed.');return true;
+ }
+ return false;
+}
+document.addEventListener('input',e=>{if(e.target.id==='widget-audio-gain')$('#widget-audio-gain-value').textContent=e.target.value+'×'});
+document.addEventListener('change',async e=>{try{
+ if(e.target.id==='widget-audio-mode'){await api('settings',{widget_audio_mode:e.target.value});await refresh(false);widgetAudioSync()}
+ if(e.target.id==='widget-audio-gain'){await api('settings',{widget_audio_gain:Number(e.target.value)});await refresh(false)}
+}catch(err){notice(err.message,true)}});

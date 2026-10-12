@@ -1,0 +1,113 @@
+{
+  "format": "nextup-widget-v3",
+  "name": "Particle Sphere",
+  "layout": "spectrum",
+  "equalizer": true,
+  "equalizer_style": "particle-sphere",
+  "colors": {
+    "bg": "#0b1020",
+    "panel": "#161c32",
+    "raised": "#1b2938",
+    "sidebar": "#090f19",
+    "text": "#f5f5fa",
+    "muted": "#9aabbd",
+    "line": "#33404c",
+    "accent": "#ffffff",
+    "accent2": "#ffffff",
+    "danger": "#ff7b95",
+    "ink": "#06111b"
+  },
+  "label": "NOW PLAYING",
+  "progress_color_source": "artwork",
+  "progress_colors": [
+    "#22d3ee",
+    "#38bdf8",
+    "#6366f1",
+    "#a855f7",
+    "#ec4899",
+    "#fb7185",
+    "#fbbf24",
+    "#a3e635"
+  ],
+  "canvas": {
+    "width": 480,
+    "height": 480
+  },
+  "elements": {
+    "equalizer": {
+      "kind": "equalizer",
+      "name": "Circular equalizer",
+      "x": 0,
+      "y": 0,
+      "w": 480,
+      "h": 480,
+      "size": 20,
+      "font": "system",
+      "weight": 400,
+      "spacing": 0,
+      "visible": true,
+      "opacity": 1,
+      "radius": 0,
+      "rotation": 0,
+      "border": 0,
+      "z": 0,
+      "color": "transparent",
+      "fill": "transparent",
+      "gradient": "transparent",
+      "border_color": "transparent",
+      "fit": "cover",
+      "align": "left",
+      "text": "",
+      "vinyl": false,
+      "scroll": true,
+      "progress_style": "line",
+      "queue_direction": "vertical",
+      "queue_count": 3,
+      "queue_gap": 10,
+      "asset": "",
+      "motion": {
+        "type": "none",
+        "seconds": 18,
+        "direction": "normal",
+        "playing_only": true,
+        "amplitude": 8,
+        "frames": []
+      }
+    }
+  },
+  "fonts": [],
+  "background": {
+    "image": "",
+    "opacity": 1,
+    "fit": "cover",
+    "stars": false,
+    "clouds": false,
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "w": 480,
+      "h": 480
+    }
+  },
+  "robot": {
+    "target": "art",
+    "base_x": 923.4,
+    "base_y": 96.8,
+    "lift_x": 509.76,
+    "lift_y": -246.0,
+    "rest_x": 884.52,
+    "rest_y": -132.0,
+    "seconds": 4.7,
+    "metal": "#a6b5c4",
+    "grip": "#263442",
+    "accent": "#9e7af5",
+    "mount": true
+  },
+  "surface": {
+    "transparent": true,
+    "radius": 0
+  },
+  "transition": "fade",
+  "transition_seconds": 0.8,
+  "presentation": "standard"
+}

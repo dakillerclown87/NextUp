@@ -1,6 +1,6 @@
 """Stable per-user launcher, dependency isolation and rollback. Python 3.13."""
 
-import json, os, shutil, subprocess, sys
+import json, os, shutil, stat, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -25,6 +25,52 @@ def version_name(value):
     if not re.fullmatch(r"\d+\.\d+\.\d+(?:-(?:alpha|beta|rc)\.\d+)?", value):
         raise ValueError("Invalid installed version.")
     return value
+
+
+def cleanup_versions():
+    """Best effort, after preflight: keep active, rollback and pending versions.
+
+    Never traverse userdata, Downloads, links or an unrecognized folder. If
+    activation markers cannot be read, do nothing rather than guess what to keep.
+    A locked old file is retried on a later launcher start, not an update failure.
+    """
+    removed = []
+    try:
+        keep = set()
+        for name in ("current.json", "previous.json", "pending.json"):
+            marker = HOME / name
+            if name == "current.json" or marker.exists():
+                keep.add(version_name(json.loads(marker.read_text())["version"]))
+        versions = HOME / "versions"
+
+        def linked(path):
+            info = path.lstat()
+            return stat.S_ISLNK(info.st_mode) or bool(
+                getattr(info, "st_file_attributes", 0)
+                & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
+            )
+
+        if not versions.exists() or linked(versions):
+            return removed
+        if not all((versions / version).is_dir() for version in keep):
+            return removed
+        for folder in versions.iterdir():
+            try:
+                version_name(folder.name)
+            except (ValueError, TypeError):
+                continue
+            if folder.name in keep:
+                continue
+            try:
+                if linked(folder) or not folder.is_dir():
+                    continue
+                shutil.rmtree(folder)
+                removed.append(folder.name)
+            except OSError as error:
+                print(f"Older version {folder.name} could not be removed; will retry on next launch: {error}")
+    except (OSError, ValueError, TypeError, KeyError):
+        print("Old-version cleanup skipped: installation markers could not be verified.")
+    return removed
 
 
 def runtime(version):
@@ -146,6 +192,7 @@ def main():
         save(HOME / "previous.json", {"version": current})
         current = previous
     pending = HOME / "pending.json"
+    preparation_failed = False
     if pending.exists():
         candidate = json.loads(pending.read_text())["version"]
         try:
@@ -155,11 +202,14 @@ def main():
             save(HOME / "current.json", {"version": candidate})
             current = candidate
         except Exception:
+            preparation_failed = True
             print(
                 "Update preparation failed. Starting the previous version. Use Diagnostics to check the failure."
             )
         pending.unlink()
     folder, exe = runtime(current)
+    if not preparation_failed:
+        cleanup_versions()
     env = {
         **os.environ,
         "NEXTUP_HOME": str(HOME),
