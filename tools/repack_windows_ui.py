@@ -5,7 +5,7 @@ Usage: python tools/repack_windows_ui.py --extracted /path/to/extracted-installe
 Native sources must match: never silently reuse binaries after native code changes.
 """
 import argparse,hashlib,json,os,shutil,subprocess,sys,re,zipfile,urllib.request,struct
-from importlib.metadata import distributions
+from importlib.metadata import Distribution
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 from studio import __version__
@@ -13,7 +13,13 @@ from tools.release import files
 from tools.audit_distribution import audit
 
 def missing_requirements(site, lock):
- installed={re.sub(r"[-_.]+", "-", d.metadata["Name"]).lower():d.version for d in distributions(path=[str(site)])}
+ # Scan the target directly. Discovery caches directory listings by mtime and
+ # can miss a wheel installed between checks on Windows (or coarse timestamps).
+ installed={}
+ for info in Path(site).glob('*.dist-info'):
+  d=Distribution.at(info)
+  name=d.metadata.get('Name')
+  if name:installed[re.sub(r"[-_.]+", "-", name).lower()]=d.version
  missing=[]
  for line in lock.read_text().splitlines():
   match=re.match(r"([A-Za-z0-9_.-]+)==([^ ]+)",line)

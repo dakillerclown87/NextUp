@@ -9,6 +9,22 @@ from unittest.mock import patch
 from tools.repack_windows_ui import missing_requirements
 
 class InstallerBundleTests(unittest.TestCase):
+    def test_repack_rescans_when_directory_timestamp_does_not_change(self):
+        import os
+        from importlib.metadata import distributions
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);site=root/'site';site.mkdir();lock=root/'lock.txt'
+            lock.write_text('Pillow==12.3.0 --hash=sha256:fixture\n')
+            stamp=site.stat()
+            self.assertEqual(list(distributions(path=[str(site)])),[])
+            self.assertEqual(len(missing_requirements(site,lock)),1)
+            info=site/'pillow-12.3.0.dist-info';info.mkdir()
+            (info/'METADATA').write_text('Name: Pillow\nVersion: 12.3.0\n')
+            os.utime(site,ns=(stamp.st_atime_ns,stamp.st_mtime_ns))
+            self.assertEqual(missing_requirements(site,lock),[])
+            (info/'METADATA').write_text('Name: Pillow\nVersion: 12.2.0\n')
+            self.assertEqual(len(missing_requirements(site,lock)),1)
+
     def test_repack_detects_missing_and_outdated_dependency(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);site=root/'site';site.mkdir();lock=root/'lock.txt'
