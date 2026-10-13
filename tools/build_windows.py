@@ -18,8 +18,9 @@ from tools.release import files
 PYTHON_VERSION = "3.13.15"
 PYTHON_SHA256 = "d1f04d990aee1253d8569e8e5104e30fa9f5fa830899f14843448872d936a2cf"
 URL = f"https://www.python.org/ftp/python/{PYTHON_VERSION}/python-{PYTHON_VERSION}-embed-amd64.zip"
-WEBVIEW_URL = "https://go.microsoft.com/fwlink/p/?LinkId=2124703"
-WEBVIEW_SHA256 = "83004a28553bcf2f932bf03564fbab407b8e1f59cd265f8dc99cc53d028e459c"
+# Resolved from Microsoft\'s Evergreen link; pin this exact artifact for repeatable builds.
+WEBVIEW_URL = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/a3af1bf0-d324-4cfe-b9bf-0b020a73ddfb/MicrosoftEdgeWebview2Setup.exe"
+WEBVIEW_SHA256 = "9b5ca0a259e6fc9b57230089258bb2ee1de74a9ed52f88d06b4ac354a8a68c70"
 
 
 def check_runtime(data):
@@ -52,7 +53,20 @@ def main():
     webview = a.webview_setup.read_bytes() if a.webview_setup else urllib.request.urlopen(WEBVIEW_URL, timeout=120).read()
     if hashlib.sha256(webview).hexdigest() != WEBVIEW_SHA256:
         raise ValueError("WebView2 bootstrapper checksum changed. Review the official Microsoft download and update the pin.")
-    (build / "MicrosoftEdgeWebview2Setup.exe").write_bytes(webview)
+    webview_path = build / "MicrosoftEdgeWebview2Setup.exe"
+    webview_path.write_bytes(webview)
+    if os.name == "nt":
+        # In addition to the byte pin, Windows must trust Microsoft's signature.
+        script = """
+$ErrorActionPreference = 'Stop'
+$sig = Get-AuthenticodeSignature -LiteralPath $env:NEXTUP_WEBVIEW_SETUP
+if ($sig.Status -ne 'Valid' -or $sig.SignerCertificate.Subject -notmatch '(^|, )CN=Microsoft Corporation(,|$)') {
+    throw "WebView2 must have a valid Microsoft Corporation signature: $($sig.Status)"
+}
+Write-Output "Verified Microsoft WebView2 signature: $($sig.SignerCertificate.Subject)"
+"""
+        env = dict(os.environ, NEXTUP_WEBVIEW_SETUP=str(webview_path.resolve()))
+        run(["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", script], env=env)
     data = a.python_zip.read_bytes() if a.python_zip else urllib.request.urlopen(URL, timeout=120).read()
     check_runtime(data)
     archive = build / "python.zip"
