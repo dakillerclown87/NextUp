@@ -1,0 +1,72 @@
+name: Publish signed release
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: 'python -m pip install --only-binary=:all: -r requirements.txt'
+      - run: python -m pip check
+      - name: Select release version from source
+        shell: pwsh
+        run: |
+          $version = python -c "from studio import __version__; print(__version__)"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "NEXTUP_RELEASE_TAG=v$version" >> $env:GITHUB_ENV
+      - name: Validate publisher before building
+        run: python tools/release.py --check-publisher
+        env:
+          NEXTUP_SIGNING_KEY: ${{ secrets.NEXTUP_SIGNING_KEY }}
+      - run: python -m unittest discover -s tests_studio -v
+      - name: Install Windows packaging tools
+        run: choco install nsis mingw -y --no-progress
+      - name: Build self-contained EXE
+        shell: pwsh
+        run: |
+          $env:Path += ';C:\Program Files (x86)\NSIS;C:\ProgramData\mingw64\mingw64\bin'
+          python tools/build_windows.py --product nextup
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Smoke test bundled runtime and installation
+        shell: pwsh
+        run: |
+          $setup = Get-ChildItem dist/NextUp-Setup-*-x64.exe | Select-Object -First 1
+          $p = Start-Process $setup.FullName -ArgumentList '/S' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "Installer failed: $($p.ExitCode)" }
+          $installed = Join-Path $env:LOCALAPPDATA 'NextUp'
+          if (!(Test-Path "$installed/NextUp.exe")) { throw 'Launcher missing' }
+          if (!(Test-Path "$installed/current.json")) { throw 'Installation not activated' }
+          & build/windows-nextup/app/studio/native/NextUpAudio.exe --self-test
+          if ($LASTEXITCODE -ne 0) { throw "Audio callback COM check failed" }
+          & build/windows-nextup/app/runtime/python.exe build/windows-nextup/app/entry.py --preflight
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & build/windows-nextup/app/runtime/python.exe -c "import sys,unittest; sys.path.insert(0,'build/windows-nextup/app'); r=unittest.TextTestRunner().run(unittest.defaultTestLoader.discover('build/windows-nextup/app/tests_studio')); sys.exit(not r.wasSuccessful())"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tools/windows_smoke.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Build and sign reviewed code
+        run: python tools/release.py
+        env:
+          NEXTUP_SIGNING_KEY: ${{ secrets.NEXTUP_SIGNING_KEY }}
+      - name: Publish release assets
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $arguments = @('release', 'create', $env:NEXTUP_RELEASE_TAG,
+            'dist/nextup-app.zip', 'dist/manifest.json', 'dist/manifest.sig',
+            'dist/nextup-windows-x64.zip', 'dist/windows-manifest.json', 'dist/windows-manifest.sig',
+            (Get-ChildItem dist/NextUp-Setup-*-x64.exe | Select-Object -First 1).FullName,
+            (Get-ChildItem dist/NextUp-Setup-*-x64.exe.sha256 | Select-Object -First 1).FullName,
+            '--target', $env:GITHUB_SHA,
+            '--title', "NextUp $env:NEXTUP_RELEASE_TAG", '--notes-file', 'CHANGELOG.md')
+          if ($env:NEXTUP_RELEASE_TAG -match '-(alpha|beta|rc)') { $arguments += '--prerelease' }
+          if ($env:GITHUB_EVENT_NAME -eq 'workflow_dispatch') { $arguments += '--draft' }
+          gh @arguments

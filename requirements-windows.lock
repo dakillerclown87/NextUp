@@ -19,3 +19,4 @@ clr_loader==0.3.1 --hash=sha256:cbad189de20d202a7d621956b0fc38049e13c9bf7ca29234
 ./vendor/proxy_tools-0.1.0-py3-none-any.whl --hash=sha256:5baab6baab3741280f234f4b894c8111d67cece7c1dae8742c8a022397ace3f7
 pythonnet==3.1.0 --hash=sha256:7bdd4de03df3547a48122a3989265c8b31d5be0d19dadffa009eec7df8085e0b
 pywebview==6.2.1 --hash=sha256:9d07275f53894ab4d5e2e0e996227193e7187dec276d9b624dccbce029216b46
+Pillow==12.3.0 --hash=sha256:1cca606cd25738df4ed873d5ad46bbdb3d83b5cbca291f6b4ff13a4df6b0bbe8

@@ -12,7 +12,12 @@
 
 NextUp runs in its own desktop window. The Windows EXE installer includes its Python runtime, so streamers do not need to install Python or run command-line setup scripts.
 
-**Current documented release:** `2.0.0-beta.61` · **Platform:** Windows x64 · **License:** MIT
+**Current source version:** `2.0.0-beta.64` · **Platform:** Windows x64 · **License:** MIT
+
+**Publishing setup:** the complete source and release workflow are included.
+The owner must finish the [one-time signing setup](docs/PUBLISHING.md#setup-for-dakillerclown87nextup)
+before in-app updates become available. Successful installations preserve settings
+and remove obsolete app versions, keeping one previous version for rollback.
 
 [Support the project on Ko-fi](https://ko-fi.com/nextupplus)
 
@@ -366,3 +371,4 @@ Open **Stream widgets** to choose a saved design or import a widget JSON file. T
 Choose **Save as new widget** to preserve the original. **Export this design** creates a portable JSON file; **Copy this widget URL** supplies the browser-source URL for OBS. The editor's controls are not part of the streamed widget. **Preview song transition** runs a demonstration without changing playback. Halo and Automata examples are in `docs/Halo-Orbit-Glow.json` and `docs/Automata-Gradient.json`; these effects require beta.42 or later. JSON widgets contain data, not executable scripts.
 
 In beta.42 the visible **Layers** list selects covered layers. Use **Send to back** or **Bring to front**, or drag the selected layer with the small move handle above its selection box. New shapes start behind existing content. **Play layer motion** previews pulse/float/spin in the editor; choosing a motion starts its preview automatically. Stop it for precise positioning. Border lights follow layer motion, including pulse. System reduced-motion settings are respected and explained in the editor.
+
