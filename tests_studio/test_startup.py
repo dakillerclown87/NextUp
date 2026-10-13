@@ -23,6 +23,7 @@ async def check():
                 await studio.cleanup()
 asyncio.run(check())
 '''
+        code = 'import sys; sys.path.insert(0, ' + repr(str(Path(__file__).resolve().parents[1])) + ');\n' + code
         result = subprocess.run([sys.executable, '-c', code],
                                 cwd=Path(__file__).resolve().parents[1],
                                 capture_output=True, text=True, timeout=20)
