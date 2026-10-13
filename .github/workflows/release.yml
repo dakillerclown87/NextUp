@@ -27,7 +27,16 @@ jobs:
           NEXTUP_SIGNING_KEY: ${{ secrets.NEXTUP_SIGNING_KEY }}
       - run: python -m unittest discover -s tests_studio -v
       - name: Install Windows packaging tools
-        run: choco install nsis mingw -y --no-progress
+        shell: pwsh
+        run: |
+          $nsis = 'C:\Program Files (x86)\NSIS\makensis.exe'
+          $compiler = 'C:\ProgramData\mingw64\mingw64\bin\gcc.exe'
+          for ($attempt = 1; $attempt -le 3; $attempt++) {
+            choco install nsis mingw -y --no-progress
+            if ((Test-Path $nsis) -and (Test-Path $compiler)) { break }
+            if ($attempt -eq 3) { throw 'Windows packaging tools were not installed.' }
+            Start-Sleep -Seconds 5
+          }
       - name: Build self-contained EXE
         shell: pwsh
         run: |
