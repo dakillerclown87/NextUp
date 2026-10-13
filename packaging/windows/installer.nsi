@@ -12,13 +12,13 @@ VIAddVersionKey "FileDescription" "${APPNAME} Setup"
 VIAddVersionKey "FileVersion" "${VERSION}"
 VIAddVersionKey "LegalCopyright" "MIT License - ${APPNAME} contributors"
 !if "${APPNAME}" == "NextUp"
-!define MUI_ICON "${SOURCE}/studio/static/nextup.ico"
-!define MUI_UNICON "${SOURCE}/studio/static/nextup.ico"
+!define MUI_ICON "${SOURCE}\studio\static\nextup.ico"
+!define MUI_UNICON "${SOURCE}\studio\static\nextup.ico"
 !endif
 !define MUI_ABORTWARNING
 !define MUI_FINISHPAGE_TEXT "${APPNAME} is installed with its own runtime. You do not need Python. Open ${APPNAME} from your desktop or Start menu."
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE "${SOURCE}/LICENSE"
+!insertmacro MUI_PAGE_LICENSE "${SOURCE}\LICENSE"
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
 !insertmacro MUI_UNPAGE_CONFIRM
@@ -78,7 +78,7 @@ Section "${APPNAME}"
     DetailPrint "Installing Microsoft WebView2 for the desktop window (internet required)..."
     InitPluginsDir
     SetOutPath "$PLUGINSDIR"
-    File "${PAYLOAD}/MicrosoftEdgeWebview2Setup.exe"
+    File "${PAYLOAD}\MicrosoftEdgeWebview2Setup.exe"
     ExecWait '"$PLUGINSDIR\MicrosoftEdgeWebview2Setup.exe" /silent /install' $0
     Call CheckWebView
     ${If} $WebViewVersion == ""
@@ -89,11 +89,11 @@ Section "${APPNAME}"
     ${EndIf}
   ${EndIf}
   SetOutPath "$INSTDIR"
-  File "${PAYLOAD}/${APPNAME}.exe"
-  File "${SOURCE}/bootstrap.py"
-  File "${SOURCE}/packaging/windows/install_support.py"
+  File "${PAYLOAD}\${APPNAME}.exe"
+  File "${SOURCE}\bootstrap.py"
+  File "${SOURCE}\packaging\windows\install_support.py"
   SetOutPath "$INSTDIR\runtime"
-  File /r "${PAYLOAD}/runtime/*"
+  File /r "${PAYLOAD}\runtime\*"
   ; Save a result even if Windows cannot start Python to create its own log.
   FileOpen $1 "$INSTDIR\install-check.txt" w
   FileWrite $1 "Starting bundled runtime check.$\r$\n"
@@ -116,7 +116,7 @@ Section "${APPNAME}"
     Abort
   ${EndIf}
   SetOutPath "$INSTDIR\versions\${VERSION}"
-  File /r "${PAYLOAD}/app/*"
+  File /r "${PAYLOAD}\app\*"
   SetOutPath "$INSTDIR"
   ; Activation performs one preflight, including repairs, and writes .ready.
   Delete "$INSTDIR\versions\${VERSION}\.ready"
