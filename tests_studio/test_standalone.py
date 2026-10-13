@@ -67,7 +67,7 @@ class StandaloneTests(unittest.IsolatedAsyncioTestCase):
             (old/'accounts.json').write_text('{"private":"sentinel"}')
             env={k:v for k,v in os.environ.items() if k not in ('NEXTUP_HOME','SONGSCOUT_HOME')}
             env['LOCALAPPDATA']=tmp
-            code='from studio.settings import HOME; import bootstrap; print(HOME); print(bootstrap.HOME)'
+            code='import sys; sys.path.insert(0, '+repr(str(Path(__file__).resolve().parents[1]))+'); from studio.settings import HOME; import bootstrap; print(HOME); print(bootstrap.HOME)'
             result=subprocess.run([sys.executable,'-c',code],env=env,capture_output=True,text=True,check=True)
             self.assertEqual(result.stdout.splitlines(),[str(Path(tmp)/'NextUp')]*2)
             self.assertFalse((Path(tmp)/'NextUp/userdata/accounts.json').exists())
