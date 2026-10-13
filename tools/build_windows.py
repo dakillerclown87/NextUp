@@ -66,7 +66,9 @@ if ($sig.Status -ne 'Valid' -or $sig.SignerCertificate.Subject -notmatch '(^|, )
 Write-Output "Verified Microsoft WebView2 signature: $($sig.SignerCertificate.Subject)"
 """
         env = dict(os.environ, NEXTUP_WEBVIEW_SETUP=str(webview_path.resolve()))
-        run(["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", script], env=env)
+        shell = shutil.which("pwsh") or "powershell.exe"
+        env.pop("PSModulePath", None)  # Let the selected PowerShell use its own modules.
+        run([shell, "-NoProfile", "-NonInteractive", "-Command", script], env=env)
     data = a.python_zip.read_bytes() if a.python_zip else urllib.request.urlopen(URL, timeout=120).read()
     check_runtime(data)
     archive = build / "python.zip"
